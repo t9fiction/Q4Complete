@@ -2,7 +2,7 @@ import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../contract/contract'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Web3 from 'web3';
 
-const { ethereum } = window;
+// const { ethereum } = window;
 
 //web3
 //contract
@@ -20,7 +20,7 @@ export const loadBlockChain = createAsyncThunk("loadBlockChain", async(_, thunkA
            await Web3.givenProvider.enable();
            const web3 = new Web3(Web3.givenProvider);
            const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
-           const accounts = await web3.eth.getAccounts;
+           const accounts = web3.eth.getAccounts;
            return{
                web3,
                contract,
