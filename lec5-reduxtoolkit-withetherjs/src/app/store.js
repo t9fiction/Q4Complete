@@ -5,8 +5,11 @@ import { web3Reducer } from "../features/web3/web3ConnectSlice";
 export const store = configureStore({
     reducer:{
         reducer : web3Reducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false
+    }),
 })
 
 export const useAppDispatch = ()=>useDispatch();
-export const useAppSelector = useSelector;
+export const useAppSelector = ()=>useSelector;
