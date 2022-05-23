@@ -39,14 +39,14 @@ export const loadBlockChain = createAsyncThunk("loadBlockChain", async(_, thunkA
 const web3ConnectSlice = createSlice({
     name: "Web3Connect",
     initialState,
-    reducer:{},
+    reducers:{},
     extraReducers:{
         [loadBlockChain.fulfilled.toString()]:(
             state, {payload}
         )=>{
             state.web3 = payload?.web3;
             state.contract = payload?.contract;
-            state.account = payload?.account;
+            state.accounts = payload?.account;
         }
     }
 })
