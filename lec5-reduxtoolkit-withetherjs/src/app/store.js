@@ -8,8 +8,9 @@ export const store = configureStore({
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
-    }),
+    })
 })
 
+console.log(store)
 export const useAppDispatch = ()=>useDispatch();
-export const useAppSelector = ()=>useSelector;
+export const useAppSelector = useSelector;
