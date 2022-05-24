@@ -11,6 +11,5 @@ export const store = configureStore({
     })
 })
 
-console.log(store)
 export const useAppDispatch = ()=>useDispatch();
 export const useAppSelector = useSelector;
