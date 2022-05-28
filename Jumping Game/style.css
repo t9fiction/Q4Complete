@@ -13,3 +13,11 @@
     height: 70px;
     background-color: blue;
 }
+
+.ground{
+    width: 75px;
+    height: 15px;
+    background-color: green;
+    position: absolute;
+    z-index: 1;
+}

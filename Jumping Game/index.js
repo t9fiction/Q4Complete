@@ -1,6 +1,12 @@
 const container = document.querySelector('.container')
 
-const player = document.createElement("div")
-container.appendChild(player)
+let playerLeftSpace = 50
+let playerBottomSpace = 150
 
-player.classList.add("player")
+const createPlayer = () => {
+    const player = document.createElement("div")
+    container.appendChild(player)
+    player.classList.add("player")
+}
+
+createPlayer();
