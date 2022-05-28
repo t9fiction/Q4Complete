@@ -1,0 +1,15 @@
+.container{
+    background-color: aliceblue;
+    /* display: flex; */
+    width: 500px;
+    height: 700px;
+    position: relative;
+    font-size: 50px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.player{
+    width: 50px;
+    height: 70px;
+    background-color: blue;
+}
