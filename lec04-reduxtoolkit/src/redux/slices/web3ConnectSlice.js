@@ -1,6 +1,7 @@
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from '../../contract/contract'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import Web3 from 'web3';
+// import Web3 from 'web3';
+import Web3 from 'web3/dist/web3.min.js'
 
 // const { ethereum } = window;
 
