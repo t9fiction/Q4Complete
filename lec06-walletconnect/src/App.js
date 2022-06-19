@@ -121,7 +121,7 @@ function App() {
             <br />
             <button onClick={() => transferERC20()}>Transfer Tokens</button>
             <button onClick={() => handleCheckBalance()}>Check Balance</button>
-            <button onClick={() => switchNetwork()}>Switch Network</button>
+            <button onClick={() => switchNetwork()}>Switch to Binance Chain</button>
           </> : <>
             <button onClick={() => handleMetamask()}>
               Metamask

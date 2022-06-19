@@ -45,9 +45,9 @@ export const loadWalletConnect = createAsyncThunk("loadBlockChain", async (_, th
     try {
         const provider = new WalletConnectProvider({
             rpc: {
-                3: "https://ropsten.infura.io/v3/17342b0f3f344d2d96c2c89c5fddc959"
+                4: "https://ropsten.infura.io/v3/17342b0f3f344d2d96c2c89c5fddc959"
             },
-            chainId: 3,
+            chainId: 4,
         })
 
         if (provider) {

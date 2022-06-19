@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './app/store';
-import { loadBlockChain } from './features/web3/web3ConnectSlice';
+import { loadBlockChain, loadWalletConnect, updateAccount} from './features/web3/web3ConnectSlice';
 
 function App() {
   const dispatch = useAppDispatch()
   const [amount, setAmount] = useState()
   const [account, setAccount] = useState()
-  const [userBalance, setUserBalance] = useState()
+  const [userBalance, setUserBalance] = useState(0)
   const { web3, accounts, contract } = useAppSelector((state) => state.reducer)
 
   const handleMetamask = () => {
     dispatch(loadBlockChain())
+  }
+  const handleMWallet = () => {
+    dispatch(loadWalletConnect())
   }
 
   // Calling function totalSupply 
@@ -24,6 +27,41 @@ function App() {
       // setUserBalance(ethers.utils.formatUnits(balance, 18));
     } catch (error) {
       console.log("error : ", error);
+    }
+
+  }
+
+
+  //Function to add network
+
+  const switchNetwork = async()=>{
+    try {
+      await web3.currentProvider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: "0x61" }]
+      })
+    } catch (error) {
+      if (error.code == 4902) {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x61',
+              chainName: "bsc testnet",
+              nativeCurrency: {
+                name: "bnb",
+                symbol: "bnb",
+                decimals: 18
+              },
+              blockExplorerUrls: [
+                "https://testnet.bscscan.com"
+              ],
+              rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"]
+            }
+          ]
+        })
+      }
+      console.log("error", error)
     }
   }
 
@@ -50,6 +88,11 @@ function App() {
     }
   }, [contract])
 
+  // account switch
+  window.ethereum.on('accountsChanged', async (data)=>{
+    dispatch(updateAccount(data))
+})
+
   return (
     <div className="App">
       <header className="App-header">
@@ -62,6 +105,9 @@ function App() {
           <button onClick={() => handleMetamask()}>
             Connect Wallet
           </button>
+          <button onClick={() => handleMWallet()}>
+            Mobile Wallet
+          </button>
         </div> : <div>
           Connected Account : {accounts[0]}
           <br />
@@ -71,6 +117,8 @@ function App() {
           <input value={account} onChange={(e) => setAccount(e.target.value)} placeholder='Receiving Address' />
           <br />
           <button onClick={() => transferERC20()}>Transfer</button>
+          <br />
+          <button onClick={() => switchNetwork()}>Switch Network</button>
         </div>
       }
     </div>
