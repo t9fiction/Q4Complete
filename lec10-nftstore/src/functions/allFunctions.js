@@ -248,4 +248,3 @@ export const loadModalConnect = createAsyncThunk("loadModalConnect", async (_, t
     alert("Error in catch")
   }
 })
-// --------------------------------- web3 Modal -----------------------------------------------------
