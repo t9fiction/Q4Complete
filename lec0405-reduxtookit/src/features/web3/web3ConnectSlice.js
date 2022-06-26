@@ -37,7 +37,7 @@ export const loadBlockChain = createAsyncThunk("loadBlockChain", async(_, thunkA
     }
 })
 
-export const loadWalletConnect = createAsyncThunk("loadBlockChain", async (_, thunkAPI) => {
+export const loadWalletConnect = createAsyncThunk("loadWalletConnect", async (_, thunkAPI) => {
     try {
         const provider = new WalletConnectProvider({
             rpc: {
