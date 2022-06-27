@@ -1,9 +1,10 @@
+import { useEffect } from 'react';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './app/store';
 import { switchNetwork, updateAccount, updateChain, loadModalConnect } from './functions/allFunctions';
 
 function App() {
-  const { web3, accounts, chainId, contract } = useAppSelector((state) => state.reducer)
+  const { web3, accounts, chainId, contract, socketContract } = useAppSelector((state) => state.reducer)
   const dispatch = useAppDispatch()
 
   const web3ModalConnect = () => {
@@ -13,12 +14,13 @@ function App() {
   // ----------handleMint----------
   const handleMint = async () => {
     try {
-      console.log("contract",contract)
-      let receipt = await contract.methods.mintNFTs().send({
-        from: accounts[0]
+      console.log("contract", contract)
+      let receipt = await contract.methods.mintNFTs(1).send({
+        from: accounts[0],
+        value: 0.001*10**18
       })
-        console.log("receipt", receipt)
-        return receipt
+      console.log("receipt", receipt)
+      return receipt
     } catch (error) {
       console.log("error", error)
       return error
@@ -29,8 +31,8 @@ function App() {
   const totalNFTs = async () => {
     try {
       let supply = await contract.methods.totalSupply().call()
-        console.log("receipt", supply)
-        return supply
+      console.log("receipt", supply)
+      return supply
     } catch (error) {
       console.log("error", error)
       return error
@@ -43,6 +45,24 @@ function App() {
     dispatch(updateChain(data))
   })
 
+  const listMintEvents = ( ) =>{
+    socketContract.events.Transfer([],function(err,event){
+      console.log("event",event)
+    })
+  };
+
+  useEffect( () => {
+    // listMintEvents();
+    async function fetchData() {
+    if (contract) {
+      totalNFTs()
+    }
+    if(socketContract){
+      listMintEvents()
+    }
+    }
+    fetchData()
+  }, [contract, socketContract]);
 
   return (
     <div className="App">
@@ -60,10 +80,10 @@ function App() {
           </>
           :
           <div>
-            {/* <button onClick={() => handleMint()}>
+            <button onClick={() => handleMint()}>
               Mint
-            </button> */}
-            <button onClick={() => totalNFTs()}>
+            </button>
+            <button>
               TotalNFTs
             </button>
           </div>

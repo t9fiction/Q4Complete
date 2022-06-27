@@ -61,13 +61,16 @@ const web3ConnectSlice = createSlice({
             console.log("payload web3: ", state.web3)
             console.log("payload contract: ", state.contract)
             console.log("payload accounts: ", state.accounts)
+            console.log("payload socketContract: ", state.socketContract)
             state.web3 = payload?.web3;
             state.contract = payload?.contract;
             state.chainId = payload?.chainId;
             state.accounts = payload?.accounts;
+            state.socketContract = payload?.socketContract;
             console.log("payload web3: ", state.web3)
             console.log("payload contract: ", state.contract)
             console.log("payload accounts: ", state.accounts)
+            console.log("payload socketContract: ", state.socketContract)
         },
         [updateAccount.fulfilled.toString()]: (
             state,

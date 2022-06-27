@@ -1,7 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../contract/contract";
 import WalletConnectProvider from "@walletconnect/ethereum-provider";
+import BurnerConnectProvider from "@burner-wallet/burner-connect-provider";
+import ethProvider from "eth-provider";
 import Web3Modal from 'web3modal'
 // import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 // import WalletConnect from '@walletconnect/web3-provider'
@@ -213,38 +215,55 @@ export const loadModalConnect = createAsyncThunk("loadModalConnect", async (_, t
           options: {
             infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
           }
+        },
+        burnerconnect: {
+          package: BurnerConnectProvider, // required
+          options: {
+            defaultNetwork: "100"
+          }
+        },
+        frame: {
+          package: ethProvider // required
         }
-        // walletlink: {
-        //   package: CoinbaseWalletSDK,
-        //   options: {
-        //     appName: APP_NAME,
-        //     infuraId: "17342b0f3f344d2d96c2c89c5fddc959" // required
-        //   }
-        // }
       }
     });
 
     const provider = await web3Modal.connect();
-    const web3 = new Web3(provider);
-    const chainId  = await web3.eth.net.getId()
-    console.log("Chain ID : ",chainId)
-    console.log(web3, "Provider")
+    if (!provider) {
+      return {
+        web3LoadingErrorMessage: "Error in connecting Wallet"
+      }
+    } else {
+      const web3 = new Web3(provider);
+      const chainId = await web3.eth.net.getId()
+      console.log("Chain ID : ", chainId)
+      console.log(web3, "Provider")
 
-    // await provider.enable();
 
-    const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
-    const accounts = await web3.eth.getAccounts();
-    return {
-      web3,
-      accounts,
-      chainId,
-      contract
-    }
-    return {
-      web3LoadingErrorMessage: "Error in connecting Wallet"
+      // await provider.enable();
+
+      const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+      const accounts = await web3.eth.getAccounts();
+
+      const web3Socket = new Web3(
+        new Web3.providers.WebsocketProvider(
+          `wss://rinkeby.infura.io/ws/v3/9043c5907b4f4696a35189799c013dee`
+        )
+      );
+      const socketContract = new web3Socket.eth.Contract(
+        CONTRACT_ABI,
+        CONTRACT_ADDRESS
+      );
+
+      return {
+        web3,
+        accounts,
+        chainId,
+        contract,
+        socketContract,
+      }
     }
   } catch (error) {
     console.log(error, "error")
-    alert("Error in catch")
   }
 })
