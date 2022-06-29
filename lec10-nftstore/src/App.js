@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { useAppDispatch, useAppSelector } from './app/store';
 import { switchNetwork, updateAccount, updateChain, loadModalConnect } from './functions/allFunctions';
@@ -6,6 +6,8 @@ import { switchNetwork, updateAccount, updateChain, loadModalConnect } from './f
 function App() {
   const { web3, accounts, chainId, contract, socketContract } = useAppSelector((state) => state.reducer)
   const dispatch = useAppDispatch()
+  const [nftSupply, setNftSupply] = useState();
+  // const [mintEvent, setMintEvent] = useState()
 
   const web3ModalConnect = () => {
     dispatch(loadModalConnect())
@@ -17,9 +19,12 @@ function App() {
       console.log("contract", contract)
       let receipt = await contract.methods.mintNFTs(1).send({
         from: accounts[0],
-        value: 0.001*10**18
+        value: 0.001 * 10 ** 18
       })
       console.log("receipt", receipt)
+      if (receipt) {
+        totalNFTs();
+      }
       return receipt
     } catch (error) {
       console.log("error", error)
@@ -32,7 +37,7 @@ function App() {
     try {
       let supply = await contract.methods.totalSupply().call()
       console.log("receipt", supply)
-      return supply
+      setNftSupply(supply)
     } catch (error) {
       console.log("error", error)
       return error
@@ -45,21 +50,34 @@ function App() {
     dispatch(updateChain(data))
   })
 
-  const listMintEvents = ( ) =>{
-    socketContract.events.Transfer([],function(err,event){
-      console.log("event",event)
+  // Subscribe to session disconnection
+  const handleDC = async () => {
+    window.ethereum.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+    });
+    // await window.ethereum.disconnect()
+  }
+
+  const listMintEvents = () => {
+    socketContract.events.Transfer([], function (err, event) {
+      // setMintEvent(event.returnValues)
+      if (event) {
+        totalNFTs();
+      }
+      console.log("event", event.returnValues)
     })
   };
 
-  useEffect( () => {
+  // window.ethereum.disconnect();
+  useEffect(() => {
     // listMintEvents();
     async function fetchData() {
-    if (contract) {
-      totalNFTs()
-    }
-    if(socketContract){
-      listMintEvents()
-    }
+      if (contract) {
+        totalNFTs()
+      }
+      if (socketContract) {
+        listMintEvents()
+      }
     }
     fetchData()
   }, [contract, socketContract]);
@@ -83,9 +101,15 @@ function App() {
             <button onClick={() => handleMint()}>
               Mint
             </button>
+            <button onClick={() => handleDC()}>
+              DC
+            </button>
             <button>
               TotalNFTs
             </button>
+            <div>
+              Total Minted NFTs are {nftSupply}
+            </div>
           </div>
       }
 
