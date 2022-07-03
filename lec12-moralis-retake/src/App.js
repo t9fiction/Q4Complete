@@ -2,6 +2,7 @@ import './App.css';
 import { useMoralis } from "react-moralis";
 import { useEffect } from 'react';
 import { TransferEth } from './components/TransferEth';
+import { TransferTokens } from './components/TransferTokens';
 
 function App() {
   const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis();
@@ -46,7 +47,10 @@ function App() {
         </button>
       </div>
       {(account && !isAuthenticating) ?
+      <div>
         < TransferEth />
+        <TransferTokens />
+        </div>
         :
         <></>
       }
