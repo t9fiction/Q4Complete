@@ -1,24 +1,56 @@
-import logo from './logo.svg';
 import './App.css';
+import { useMoralis } from "react-moralis";
+import { useEffect } from 'react';
+import { TransferEth } from './components/TransferEth';
 
 function App() {
+  const { authenticate, isAuthenticated, isAuthenticating, user, account, logout } = useMoralis();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // add your logic here
+      console.log("User Logged in", account)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
+
+  const login = async () => {
+
+    if (!isAuthenticated || !account) {
+      await authenticate({ signingMessage: "Log in using Moralis" })
+        .then(function (user) {
+          console.log("logged in user:", user);
+          console.log(user.get("ethAddress"));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }
+
+  const logOut = async () => {
+    await logout();
+    console.log("logged out");
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        HOME
       </header>
-    </div>
+      <h3>Moralis Testing</h3>
+      <div>
+        <button onClick={() => login()} disabled={account && true}>Moralis Login</button>
+        <button onClick={() => logOut()} disabled={isAuthenticating || (!account && true)}>
+          Logout
+        </button>
+      </div>
+      {(account && !isAuthenticating) ?
+        < TransferEth />
+        :
+        <></>
+      }
+    </div >
   );
 }
 
